@@ -5,14 +5,11 @@ module JB_Unit (input wire [31:0] operand1,
     wire [31:0] temp;
     assign temp = operand1 + operand2;
     
-    always @(opcode or temp)
-    begin
-        if (opcode == 7'b1100111)
-        begin
+    always @(opcode or temp) begin
+        if (opcode == 7'b1100111) begin
             jb_out = temp & 32'hfffffffe;
         end
-        else
-        begin
+        else begin
             jb_out = temp;
         end
     end

@@ -101,8 +101,7 @@ module Controller (
     assign M_dm_w_en = (M_op == S_type)? ((M_f3 == 3'b000)? (4'b001) : ((M_f3 == 3'b001)? (4'b0011) : (4'b1111))) : (4'b0);
     // assign waiting = 0;
     
-    always @(opcode or rd or rs1 or rs2 or alu_out or E_rs1 or E_rs2 or E_rd or E_op or M_op or M_f3 or M_rd or W_op or W_f3 or W_rd)
-    begin
+    always @(opcode or rd or rs1 or rs2 or alu_out or E_rs1 or E_rs2 or E_rd or E_op or M_op or M_f3 or M_rd or W_op or W_f3 or W_rd) begin
         F_im_w_en     = 4'b0000;
         W_wb_en       = (W_op == R_type || W_op == LOAD || W_op == I_type || W_op == JALR || W_op == JAL || W_op == AUIPC || W_op == LUI)? 1'b1 : 1'b0;
         E_alu_op1_sel = (E_op != JAL && E_op != AUIPC && E_op != LUI && E_op != JALR)? 1'b1 : 1'b0;
@@ -110,184 +109,114 @@ module Controller (
         E_jb_op1_sel  = (E_op == JALR)? 1'b1 : 1'b0;
         W_wb_data_sel = (W_op == LOAD)? 1'b1 : 1'b0;
 
-        if (E_op >= 7'd0)
-        begin
+        if (E_op >= 7'd0) begin
             casex(E_op)
-                B_type:
-                begin
-                    next_pc_sel = alu_out;
-                end
-                7'b110x111:
-                begin
-                    next_pc_sel = 1'b1;
-                end
-                default:
-                begin
-                    next_pc_sel = 1'b0;
-                end
+                B_type:     next_pc_sel = alu_out;
+                7'b110x111: next_pc_sel = 1'b1;
+                default:    next_pc_sel = 1'b0;
             endcase
         end
-        else
-        begin
+        else begin
             next_pc_sel = 1'b0;
         end
 
-        //M_dm_w_en//
-        /*if (M_op == S_type)
-        begin
-            case (M_f3)
-                3'b000:
-                begin
-                    M_dm_w_en = 4'b0001;
-                end
-                3'b001:
-                begin
-                    M_dm_w_en = 4'b0011;
-                end
-                3'b010:
-                begin
-                    M_dm_w_en = 4'b1111;
-                end
-                default:
-                begin
-                    M_dm_w_en = 4'b0000;
-                end
-            endcase
-        end
-        else
-        begin
-            M_dm_w_en = 4'b0000;
-        end*/
-        
         //D_rs1_data_sel//
-        if ((opcode != LUI && opcode != AUIPC && opcode != JAL) && (W_op != B_type && W_op != S_type))
-        begin
-            if ((W_rd != 5'd0) && (rs1 == W_rd))
-            begin
+        if ((opcode != LUI && opcode != AUIPC && opcode != JAL) && (W_op != B_type && W_op != S_type)) begin
+            if ((W_rd != 5'd0) && (rs1 == W_rd)) begin
                 D_rs1_data_sel = 1'b1;
             end
-            else
-            begin
+            else begin
                 D_rs1_data_sel = 1'b0;
             end
         end
-        else
-        begin
+        else begin
             D_rs1_data_sel = 1'b0;
         end
 
         //D_rs2_data_sel//
-        if ((opcode == B_type || opcode == S_type || opcode == R_type) && (W_op != B_type && W_op != S_type))
-        begin
-            if ((W_rd != 5'd0) && (rs2 == W_rd))
-            begin
+        if ((opcode == B_type || opcode == S_type || opcode == R_type) && (W_op != B_type && W_op != S_type)) begin
+            if ((W_rd != 5'd0) && (rs2 == W_rd)) begin
                 D_rs2_data_sel = 1'b1;
             end
-            else
-            begin
+            else begin
                 D_rs2_data_sel = 1'b0;
             end
         end
-        else
-        begin
+        else begin
             D_rs2_data_sel = 1'b0;
         end
         
         //E_rs1_data_sel//
-        if ((E_op != LUI && E_op != AUIPC && E_op != JAL) && (M_op != B_type && M_op != S_type))
-        begin
-            if ((E_rs1 == M_rd) && (M_rd != 5'b0))
-            begin
+        if ((E_op != LUI && E_op != AUIPC && E_op != JAL) && (M_op != B_type && M_op != S_type)) begin
+            if ((E_rs1 == M_rd) && (M_rd != 5'b0)) begin
                 E_rs1_data_sel = 2'd1;
             end
-            else if ((E_op != LUI && E_op != AUIPC && E_op != JAL) && (W_op != B_type && W_op != S_type))
-            begin
-                if ((E_rs1 == W_rd) && (W_rd != 5'b0))
-                begin
+            else if ((E_op != LUI && E_op != AUIPC && E_op != JAL) && (W_op != B_type && W_op != S_type)) begin
+                if ((E_rs1 == W_rd) && (W_rd != 5'b0)) begin
                     E_rs1_data_sel = 2'd0;
                 end
-                else
-                begin
+                else begin
                     E_rs1_data_sel = 2'd2;
                 end
             end
-            else
-            begin
+            else begin
                 E_rs1_data_sel = 2'd2;
             end
         end
-        else if ((E_op != LUI && E_op != AUIPC && E_op != JAL) && (W_op != B_type && W_op != S_type))
-        begin
-            if ((E_rs1 == W_rd) && (W_rd != 5'b0))
-            begin
+        else if ((E_op != LUI && E_op != AUIPC && E_op != JAL) && (W_op != B_type && W_op != S_type)) begin
+            if ((E_rs1 == W_rd) && (W_rd != 5'b0)) begin
                 E_rs1_data_sel = 2'd0;
             end
-            else
-            begin
+            else begin
                 E_rs1_data_sel = 2'd2;
             end
         end
-        else
-        begin
+        else begin
             E_rs1_data_sel = 2'd2;
         end
 
         //E_rs2_data_sel//
-        if ((E_op == B_type || E_op == S_type || E_op == R_type) && (M_op != B_type && M_op != S_type))
-        begin
-            if ((E_rs2 == M_rd) && (M_rd != 5'b0))
-            begin
+        if ((E_op == B_type || E_op == S_type || E_op == R_type) && (M_op != B_type && M_op != S_type)) begin
+            if ((E_rs2 == M_rd) && (M_rd != 5'b0)) begin
                 E_rs2_data_sel = 2'd1;
             end
-            else if ((E_op == B_type || E_op == S_type || E_op == R_type) && (W_op != B_type && W_op != S_type))
-            begin
-                if ((E_rs2 == W_rd) && (W_rd != 5'b0))
-                begin
+            else if ((E_op == B_type || E_op == S_type || E_op == R_type) && (W_op != B_type && W_op != S_type)) begin
+                if ((E_rs2 == W_rd) && (W_rd != 5'b0)) begin
                     E_rs2_data_sel = 2'd0;
                 end
-                else
-                begin
+                else begin
                     E_rs2_data_sel = 2'd2;
                 end
             end
-            else
-            begin
+            else begin
                 E_rs2_data_sel = 2'd2;
             end
         end
-        else if ((E_op == B_type || E_op == S_type || E_op == R_type) && (W_op != B_type && W_op != S_type))
-        begin
-            if ((E_rs2 == W_rd) && (W_rd != 5'b0))
-            begin
+        else if ((E_op == B_type || E_op == S_type || E_op == R_type) && (W_op != B_type && W_op != S_type)) begin
+            if ((E_rs2 == W_rd) && (W_rd != 5'b0)) begin
                 E_rs2_data_sel = 2'd0;
             end
-            else
-            begin
+            else begin
                 E_rs2_data_sel = 2'd2;
             end
         end
-        else
-        begin
+        else begin
             E_rs2_data_sel = 2'd2;
         end
         
         //stall//
-        if (E_op == LOAD)
-        begin
+        if (E_op == LOAD) begin
             if (((opcode != LUI && opcode != AUIPC && opcode != JAL)
                 && (E_rd != 5'd0) && (rs1 == E_rd)) ||
                 ((opcode == B_type || opcode == S_type || opcode == R_type) &&
-                (E_rd != 5'd0) && (rs2 == E_rd)))
-                begin
+                (E_rd != 5'd0) && (rs2 == E_rd))) begin
                     stall = 1'd1;
                 end
-            else
-            begin
+            else begin
                 stall = 1'd0;
             end
         end
-        else
-        begin
+        else begin
             stall = 1'd0;
         end
     end

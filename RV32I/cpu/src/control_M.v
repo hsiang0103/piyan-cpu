@@ -9,14 +9,12 @@ module control_M(input wire clk,
     
     always@(posedge clk or posedge rst)
     begin
-        if (rst)
-        begin
+        if (rst) begin
             M_out_f3 <= 3'b0;
             M_out_op <= 5'b0;
             M_out_rd <= 5'b0;
         end
-        else
-        begin
+        else begin
             M_out_f3 <= M_in_f3;
             M_out_op <= M_in_op;
             M_out_rd <= M_in_rd;

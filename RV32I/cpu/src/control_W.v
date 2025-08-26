@@ -9,14 +9,12 @@ module control_W(input wire clk,
     
     always@(posedge clk or posedge rst)
     begin
-        if (rst)
-        begin
+        if (rst) begin
             W_out_f3 <= 3'b0;
             W_out_op <= 5'b0;
             W_out_rd <= 5'b0;
         end
-        else
-        begin
+        else begin
             W_out_f3 <= W_in_f3;
             W_out_op <= W_in_op;
             W_out_rd <= W_in_rd;
