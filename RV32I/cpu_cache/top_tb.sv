@@ -1,6 +1,29 @@
+`include "./src/Adder.v"
+`include "./src/ALU.v"
+`include "./src/control_E.v"
+`include "./src/control_M.v"
+`include "./src/control_W.v"
+`include "./src/Controller.v"
+`include "./src/CPU.v"
+`include "./src/Data_mem.v"
+`include "./src/SRAM.v"
+`include "./src/dcache.v"
+`include "./src/decoder.v"
+`include "./src/Imme_Ext.v"
+`include "./src/JB_Unit.v"
+`include "./src/LD_Filter.v"
+`include "./src/Mux.v"
+`include "./src/Mux3.v"
+`include "./src/Reg_D.v"
+`include "./src/Reg_E.v"
+`include "./src/Reg_M.v"
+`include "./src/Reg_PC.v"
+`include "./src/Reg_W.v"
+`include "./src/RegFile.v"
+`include "./src/Top.v"
+
 // Copyright (c) 2020 Sonal Pinto
 // SPDX-License-Identifier: Apache-2.0
-`timescale 100ps/100ps
 `define CYCLE 10      // Cycle time
 `define MAX 300000    // Max cycle number
 
@@ -60,6 +83,11 @@ module top_tb;
   end
 
   always #(`CYCLE/2) clk = ~clk;
+
+  initial begin
+    $fsdbDumpfile("CPU.fsdb");
+    $fsdbDumpvars("+all");
+  end
 
   initial begin
     clk = 1; rst = 1;
@@ -186,4 +214,6 @@ module top_tb;
     $display("\n");
     $finish;
   end
+
+  
 endmodule

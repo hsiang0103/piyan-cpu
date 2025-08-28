@@ -101,7 +101,7 @@ module Controller (
     assign M_dm_w_en = (M_op == S_type)? ((M_f3 == 3'b000)? (4'b001) : ((M_f3 == 3'b001)? (4'b0011) : (4'b1111))) : (4'b0);
     // assign waiting = 0;
     
-    always @(opcode or rd or rs1 or rs2 or alu_out or E_rs1 or E_rs2 or E_rd or E_op or M_op or M_f3 or M_rd or W_op or W_f3 or W_rd) begin
+    always @(*) begin
         F_im_w_en     = 4'b0000;
         W_wb_en       = (W_op == R_type || W_op == LOAD || W_op == I_type || W_op == JALR || W_op == JAL || W_op == AUIPC || W_op == LUI)? 1'b1 : 1'b0;
         E_alu_op1_sel = (E_op != JAL && E_op != AUIPC && E_op != LUI && E_op != JALR)? 1'b1 : 1'b0;

@@ -17,6 +17,7 @@ module CPU (input wire clk,
     wire [3:0] write;
     wire mrden, mwren, hit_miss;
     wire data_ready;
+    wire dmem_data_ready;
  
 
     Top t1(
@@ -49,6 +50,7 @@ module CPU (input wire clk,
     .address(M_out_alu_out[15:0]),
     .data_in_cpu(M_out_rs2_data),
     .data_in_mem(data_out),
+    .data_in_mem_ready(dmem_data_ready),
     .rd(read),
     .wr(write),
     .hit_miss(hit_miss),
@@ -69,6 +71,7 @@ module CPU (input wire clk,
     .rden(mrden),
     .wren(mwren),
     .read_data(data_out),
-    .rst(rst)
+    .rst(rst),
+    .ready(dmem_data_ready)
     );
 endmodule

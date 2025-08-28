@@ -6,6 +6,7 @@
 ./src/Controller.v
 ./src/CPU.v
 ./src/Data_mem.v
+./src/SRAM.v
 ./src/dcache.v
 ./src/decoder.v
 ./src/Imme_Ext.v
@@ -20,3 +21,4 @@
 ./src/Reg_W.v
 ./src/RegFile.v
 ./src/Top.v
+top_tb.sv
