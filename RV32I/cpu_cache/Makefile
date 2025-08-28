@@ -16,6 +16,8 @@ all: $(OUT)
 $(OUT): $(SRC) $(TB)
 	$(VLOG) $(VLOG_FLAGS) $(SRC) $(TB) -o $(OUT)
 
+
+
 run: $(OUT)
 	./$(OUT)
 
